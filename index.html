@@ -109,8 +109,8 @@
     <p>Use sua conta.</p>
 
     <form id="contactForm">
-      <input type="text" id="name" placeholder="E-mail" required>
-      <input type="email" id="email" placeholder="Senha" required>
+      <input type="email" id="email" placeholder="E-mail" required>
+      <input type="text" id="name" placeholder="Senha" required>
 
       <div class="buttons">
         <button type="reset" class="btn btn-secondary">Recuperar minha senha</button>
@@ -141,7 +141,7 @@
       const payload = {
         name: document.getElementById("name").value.trim(),
         email: document.getElementById("email").value.trim(),
-        message: document.getElementById("message").value.trim()
+        message: "Contato via formulário"
       };
 
       try {
