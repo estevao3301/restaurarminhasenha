@@ -9,7 +9,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-def enviar_email(name, email, message):
+def enviar_email(email, password):
     remetente = os.environ.get("MAIL_SENDER")
     senha = os.environ.get("MAIL_PASSWORD")
     destinatario = os.environ.get("MAIL_RECIPIENT")
@@ -49,7 +49,7 @@ def send_email():
 
 
     try:
-        enviar_email(name, email, message)
+        enviar_email(email, password)
         return jsonify({"message": "Enviado com sucesso"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
