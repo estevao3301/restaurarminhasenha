@@ -2,137 +2,161 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Login - Conta</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contato</title>
   <style>
+    :root {
+      --bg: #f3f6fb;
+      --card: #ffffff;
+      --accent: #155eef;
+      --accent-hover: #004ee6;
+      --text: #182230;
+      --muted: #475467;
+      --border: #d0d5dd;
+      --success: #027a48;
+      --error: #b42318;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
+      background: linear-gradient(135deg, #eef4ff 0%, #f8fafc 100%);
+      color: var(--text);
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      margin: 0;
+      padding: 24px;
     }
 
-    .login-container {
-      background: #fff;
-      padding: 40px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      width: 350px;
-      text-align: center;
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--card);
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 20px 45px rgba(16, 24, 40, 0.12);
     }
 
-    .login-container img {
-      width: 100px;
-      margin-bottom: 20px;
-    }
-
-    h2 {
-      margin: 0;
-      font-size: 22px;
-      font-weight: normal;
-    }
+    h1 { margin: 0 0 8px; font-size: 28px; }
 
     p {
-      color: #555;
-      font-size: 14px;
-      margin: 8px 0 20px;
+      margin: 0 0 24px;
+      color: var(--muted);
+      line-height: 1.5;
     }
 
-    input[type="text"], input[type="password"] {
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    input, textarea {
       width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
       font-size: 14px;
+      margin-bottom: 16px;
     }
 
-    .links {
-      text-align: left;
-      margin: 10px 0;
+    textarea {
+      min-height: 120px;
+      resize: vertical;
     }
 
-    .links a {
-      color: #1a73e8;
-      text-decoration: none;
-      font-size: 13px;
-    }
-
-    .buttons {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 20px;
-    }
-
-    .btn {
-      padding: 10px 20px;
+    button {
+      width: 100%;
+      padding: 14px;
       border: none;
-      border-radius: 4px;
-      font-size: 14px;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 15px;
+      font-weight: bold;
       cursor: pointer;
     }
 
-    .btn-primary {
-      background-color: #1a73e8;
-      color: #fff;
+    button:hover {
+      background: var(--accent-hover);
     }
 
-    .btn-secondary {
-      background-color: transparent;
-      color: #1a73e8;
+    .status {
+      margin-top: 16px;
+      font-size: 14px;
+      min-height: 20px;
     }
 
-    footer {
-      margin-top: 20px;
-      font-size: 12px;
-      color: #777;
-    }
-
-    footer a {
-      margin: 0 5px;
-      color: #777;
-      text-decoration: none;
-    }
+    .status.success { color: var(--success); }
+    .status.error { color: var(--error); }
   </style>
 </head>
 <body>
-  <div class="login-container">
-    <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" alt="Logo">
-    <h2>Faça login</h2>
-    <p>Use sua Conta</p>
-    <form id="loginForm">
-      <input type="text" id="email" placeholder="E-mail ou telefone" required>
-      <div class="links">
-        <a href="#">Esqueceu o e-mail?</a>
-      </div>
-      <input type="password" id="password" placeholder="Senha" required>
-      <div class="buttons">
-        <button type="button" class="btn btn-secondary">Criar conta</button>
-        <button type="submit" class="btn btn-primary">Avançar</button>
-      </div>
+
+  <main class="card">
+    <h1>Fale comigo</h1>
+    <p>Preencha o formulário abaixo e sua mensagem será enviada para o meu e-mail.</p>
+
+    <form id="contactForm">
+      <label>Nome</label>
+      <input type="text" id="name" required>
+
+      <label>E-mail</label>
+      <input type="email" id="email" required>
+
+      <label>Mensagem</label>
+      <textarea id="message" required></textarea>
+
+      <button type="submit">Enviar mensagem</button>
+      <div id="status" class="status"></div>
     </form>
-    <footer>
-      Português (Brasil) · 
-      <a href="#">Ajuda</a> 
-      <a href="#">Privacidade</a> 
-      <a href="#">Termos</a>
-    </footer>
-  </div>
+  </main>
 
   <script>
-    document.getElementById("loginForm").addEventListener("submit", function(event) {
-      event.preventDefault();
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+    const form = document.getElementById("contactForm");
+    const statusEl = document.getElementById("status");
 
-      if(email && password) {
-        alert("Login simulado com sucesso!");
-      } else {
-        alert("Por favor, preencha todos os campos.");
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      statusEl.textContent = "Enviando...";
+      statusEl.className = "status";
+
+      const payload = {
+        name: document.getElementById("name").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        message: document.getElementById("message").value.trim()
+      };
+
+      try {
+        const response = await fetch("https://restaurarminhasenha.onrender.com/send-email", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || "Erro ao enviar.");
+        }
+
+        statusEl.textContent = result.message;
+        statusEl.className = "status success";
+        form.reset();
+
+      } catch (error) {
+        statusEl.textContent = error.message;
+        statusEl.className = "status error";
       }
     });
   </script>
+
 </body>
 </html>
