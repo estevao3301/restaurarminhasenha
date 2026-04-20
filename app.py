@@ -1,58 +1,86 @@
+from flask import Flask, jsonify, request, redirect
+from flask_cors import CORS
 import os
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from flask import Flask, jsonify, request
-from flask_cors import CORS
-
+# -------------------------
+# CONFIGURAÇÃO DO SERVIDOR
+# -------------------------
 app = Flask(__name__)
 CORS(app)
 
-def enviar_email(email, password):
+SMTP_SERVER = "smtp.gmail.com"
+SMTP_PORT = 587
+
+
+# -------------------------
+# FUNÇÃO DE ENVIO DE EMAIL
+# -------------------------
+def enviar_email(name: str, email: str, message: str) -> None:
     remetente = os.environ.get("MAIL_SENDER")
     senha = os.environ.get("MAIL_PASSWORD")
     destinatario = os.environ.get("MAIL_RECIPIENT")
 
-    msg = MIMEMultipart()
+    if not all([remetente, senha, destinatario]):
+        raise RuntimeError("Variáveis de ambiente MAIL_SENDER, MAIL_PASSWORD e MAIL_RECIPIENT não configuradas.")
+
+    msg = MIMEMultipart("alternative")
     msg["Subject"] = "Nova mensagem do site"
     msg["From"] = remetente
     msg["To"] = destinatario
 
     html = f"""
-    <h2>Nova mensagem</h2>
-    <p><b>Email:</b> {email}</p>
-    <p><b>Senha:</b> {password}</p>
+    <html>
+      <body style="font-family: Arial, sans-serif; color: #333;">
+        <h2 style="color: #2c3e50;">Nova mensagem recebida</h2>
+        <p><strong>Nome:</strong> {name}</p>
+        <p><strong>E-mail:</strong> {email}</p>
+        <p><strong>Mensagem:</strong></p>
+        <p>{message}</p>
+      </body>
+    </html>
     """
 
-    msg.attach(MIMEText(html, "html"))
+    msg.attach(MIMEText(html, "html", "utf-8"))
 
-    with smtplib.SMTP("smtp.gmail.com", 587) as servidor:
+    with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as servidor:
         servidor.starttls()
         servidor.login(remetente, senha)
         servidor.send_message(msg)
-        
-@app.get("/")
+
+
+# -------------------------
+# ROTAS
+# -------------------------
+@app.route("/", methods=["GET"])
 def home():
-    return "API ONLINE 🚀"
+    # Redireciona para o site principal
+    return redirect("https://estevao3301.github.io/restaurarminhasenha/", code=302)
 
-@app.post("/send-email")
+@app.route("/send-email", methods=["POST"])
 def send_email():
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
 
-    email = data.get("email")
-    password = data.get("password")
+    name = (data.get("name") or "").strip()
+    email = (data.get("email") or "").strip()
+    message = (data.get("message") or "").strip()
 
-    if not email or not password:
-        return jsonify({"error": "Preencha email e senha"}), 400
-
+    if not name or not email or not message:
+        return jsonify({"error": "Preencha todos os campos."}), 400
 
     try:
-        enviar_email(email, password)
-        return jsonify({"message": "Enviado com sucesso"})
+        enviar_email(name, email, message)
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": f"Erro ao enviar email: {str(e)}"}), 500
 
+    return jsonify({"message": "Mensagem enviada com sucesso!"})
+
+
+# -------------------------
+# MAIN
+# -------------------------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
