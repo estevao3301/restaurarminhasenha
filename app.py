@@ -31,8 +31,7 @@ def enviar_email(email, password):
         servidor.starttls()
         servidor.login(remetente, senha)
         servidor.send_message(msg)
-
-
+        
 @app.get("/")
 def home():
     return "API ONLINE 🚀"
