@@ -41,12 +41,12 @@ def home():
 def send_email():
     data = request.get_json()
 
-    name = data.get("name")
     email = data.get("email")
-    message = data.get("message")
+    password = data.get("password")
 
-    if not name or not email or not message:
-        return jsonify({"error": "Preencha tudo"}), 400
+    if not email or not password:
+        return jsonify({"error": "Preencha email e senha"}), 400
+
 
     try:
         enviar_email(name, email, message)
