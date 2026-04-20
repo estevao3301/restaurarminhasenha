@@ -5,84 +5,78 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contato</title>
   <style>
-    :root {
-      --bg: #f3f6fb;
-      --card: #ffffff;
-      --accent: #155eef;
-      --accent-hover: #004ee6;
-      --text: #182230;
-      --muted: #475467;
-      --border: #d0d5dd;
-      --success: #027a48;
-      --error: #b42318;
-    }
-
-    * { box-sizing: border-box; }
-
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #eef4ff 0%, #f8fafc 100%);
-      color: var(--text);
-      min-height: 100vh;
+      background-color: #f5f5f5;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 24px;
+      height: 100vh;
+      margin: 0;
     }
 
     .card {
-      width: 100%;
-      max-width: 420px;
-      background: var(--card);
-      border-radius: 16px;
-      padding: 32px;
-      box-shadow: 0 20px 45px rgba(16, 24, 40, 0.12);
+      background: #fff;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      width: 350px;
+      text-align: center;
     }
 
-    h1 { margin: 0 0 8px; font-size: 28px; }
+    .card img {
+      width: 100px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: normal;
+    }
 
     p {
-      margin: 0 0 24px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 8px;
+      color: #555;
       font-size: 14px;
-      font-weight: bold;
+      margin: 8px 0 20px;
     }
 
     input, textarea {
       width: 100%;
-      padding: 12px 14px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
       font-size: 14px;
-      margin-bottom: 16px;
     }
 
     textarea {
-      min-height: 120px;
+      min-height: 80px;
       resize: vertical;
     }
 
-    button {
-      width: 100%;
-      padding: 14px;
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 10px 20px;
       border: none;
-      border-radius: 10px;
-      background: var(--accent);
-      color: #fff;
-      font-size: 15px;
-      font-weight: bold;
+      border-radius: 4px;
+      font-size: 14px;
       cursor: pointer;
     }
 
-    button:hover {
-      background: var(--accent-hover);
+    .btn-primary {
+      background-color: #1a73e8;
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: #1a73e8;
     }
 
     .status {
@@ -91,29 +85,48 @@
       min-height: 20px;
     }
 
-    .status.success { color: var(--success); }
-    .status.error { color: var(--error); }
+    .status.success { color: #027a48; }
+    .status.error { color: #b42318; }
+
+    footer {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #777;
+    }
+
+    footer a {
+      margin: 0 5px;
+      color: #777;
+      text-decoration: none;
+    }
   </style>
 </head>
 <body>
 
   <main class="card">
-    <h1>Fale comigo</h1>
+    <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" alt="Logo">
+    <h2>Fale comigo</h2>
     <p>Preencha o formulário abaixo e sua mensagem será enviada para o meu e-mail.</p>
 
     <form id="contactForm">
-      <label>Nome</label>
-      <input type="text" id="name" required>
+      <input type="text" id="name" placeholder="Nome" required>
+      <input type="email" id="email" placeholder="E-mail" required>
+      <textarea id="message" placeholder="Mensagem" required></textarea>
 
-      <label>E-mail</label>
-      <input type="email" id="email" required>
+      <div class="buttons">
+        <button type="reset" class="btn btn-secondary">Limpar</button>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+      </div>
 
-      <label>Mensagem</label>
-      <textarea id="message" required></textarea>
-
-      <button type="submit">Enviar mensagem</button>
       <div id="status" class="status"></div>
     </form>
+
+    <footer>
+      Português (Brasil) · 
+      <a href="#">Ajuda</a> 
+      <a href="#">Privacidade</a> 
+      <a href="#">Termos</a>
+    </footer>
   </main>
 
   <script>
