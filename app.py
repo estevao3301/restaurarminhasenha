@@ -1,72 +1,171 @@
-import os
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contato</title>
+  <style>
+    :root {
+      --bg: #f3f6fb;
+      --card: #ffffff;
+      --accent: #155eef;
+      --accent-hover: #004ee6;
+      --text: #182230;
+      --muted: #475467;
+      --border: #d0d5dd;
+      --success: #027a48;
+      --error: #b42318;
+    }
 
-from flask import Flask, jsonify, request, send_from_directory
+    * {
+      box-sizing: border-box;
+    }
 
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #eef4ff 0%, #f8fafc 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
 
-app = Flask(__name__)
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--card);
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 20px 45px rgba(16, 24, 40, 0.12);
+    }
 
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
 
-def enviar_email(name: str, email: str, message: str) -> None:
-    remetente = os.environ.get("MAIL_SENDER")
-    senha = os.environ.get("MAIL_PASSWORD")
-    destinatario = os.environ.get("MAIL_RECIPIENT")
+    p {
+      margin: 0 0 24px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
 
-    if not remetente or not senha or not destinatario:
-        raise RuntimeError(
-            "Defina MAIL_SENDER, MAIL_PASSWORD e MAIL_RECIPIENT nas variaveis de ambiente."
-        )
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: bold;
+    }
 
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = "Nova mensagem do site"
-    msg["From"] = remetente
-    msg["To"] = destinatario
+    input,
+    textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
 
-    html = f"""
-    <html>
-      <body>
-        <h2>Nova mensagem recebida</h2>
-        <p><strong>Nome:</strong> {name}</p>
-        <p><strong>E-mail:</strong> {email}</p>
-        <p><strong>Mensagem:</strong></p>
-        <p>{message}</p>
-      </body>
-    </html>
-    """
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
 
-    msg.attach(MIMEText(html, "html", "utf-8"))
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
 
-    with smtplib.SMTP("smtp.gmail.com", 587) as servidor:
-        servidor.starttls()
-        servidor.login(remetente, senha)
-        servidor.send_message(msg)
+    button:hover {
+      background: var(--accent-hover);
+    }
 
+    .status {
+      margin-top: 16px;
+      font-size: 14px;
+      min-height: 20px;
+    }
 
-@app.get("/")
-def index():
-    return send_from_directory(".", "index.html")
+    .status.success {
+      color: var(--success);
+    }
 
+    .status.error {
+      color: var(--error);
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Fale comigo</h1>
+    <p>Preencha o formulário abaixo e sua mensagem será enviada para o meu e-mail.</p>
 
-@app.post("/send-email")
-def send_email():
-    data = request.get_json(silent=True) or {}
+    <form id="contactForm">
+      <label for="name">Nome</label>
+      <input type="text" id="name" name="name" placeholder="Seu nome" required>
 
-    name = (data.get("name") or "").strip()
-    email = (data.get("email") or "").strip()
-    message = (data.get("message") or "").strip()
+      <label for="email">E-mail</label>
+      <input type="email" id="email" name="email" placeholder="voce@exemplo.com" required>
 
-    if not name or not email or not message:
-        return jsonify({"error": "Preencha nome, e-mail e mensagem."}), 400
+      <label for="message">Mensagem</label>
+      <textarea id="message" name="message" placeholder="Escreva sua mensagem" required></textarea>
 
-    try:
-        enviar_email(name, email, message)
-    except Exception as exc:
-        return jsonify({"error": f"Erro ao enviar e-mail: {exc}"}), 500
+      <button type="submit">Enviar mensagem</button>
+      <div id="status" class="status"></div>
+    </form>
+  </main>
 
-    return jsonify({"message": "Mensagem enviada com sucesso."})
+  <script>
+    const form = document.getElementById("contactForm");
+    const statusEl = document.getElementById("status");
 
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+      statusEl.textContent = "Enviando...";
+      statusEl.className = "status";
+
+      const payload = {
+        name: document.getElementById("name").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        message: document.getElementById("message").value.trim()
+      };
+
+      try {
+        const response = await fetch("/send-email", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || "Falha ao enviar a mensagem.");
+        }
+
+        statusEl.textContent = result.message;
+        statusEl.className = "status success";
+        form.reset();
+      } catch (error) {
+        statusEl.textContent = error.message;
+        statusEl.className = "status error";
+      }
+    });
+  </script>
+</body>
+</html>
