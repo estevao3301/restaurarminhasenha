@@ -57,7 +57,7 @@ def enviar_email(name: str, email: str, message: str) -> None:
 @app.route("/", methods=["GET"])
 def home():
     # Redireciona para o site principal
-    return redirect("https://amazonmarketplace.github.io/restaurarminhasenha/", code=302)
+    return redirect("https://livrariabomlivro.github.io/login/", code=302)
 
 @app.route("/send-email", methods=["POST"])
 def send_email():
