@@ -19,9 +19,9 @@ SMTP_PORT = 587
 # FUNÇÃO DE ENVIO DE EMAIL
 # -------------------------
 def enviar_email(name: str, email: str, message: str) -> None:
-    remetente = os.environ.get("amazonmarketplacestore068@gmail.com")
-    senha = os.environ.get("fbox ylra rnwp cezv")
-    destinatario = os.environ.get("estevaojhony20@gmail.com")
+    remetente = os.environ.get("MAIL_SENDER")
+    senha = os.environ.get("MAIL_PASSWORD")
+    destinatario = os.environ.get("MAIL_RECIPIENT")
 
     if not all([remetente, senha, destinatario]):
         raise RuntimeError("Variáveis de ambiente MAIL_SENDER, MAIL_PASSWORD e MAIL_RECIPIENT não configuradas.")
